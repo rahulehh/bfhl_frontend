@@ -7,15 +7,16 @@ function App() {
   const [file, setFile] = useState(null);
   const [data, setData] = useState("");
 
-  const upload = () => {
-    const formData = new FormData();
+  const upload = async () => {
+    let formData = new FormData();
 
     formData.append("file_b64", file);
     formData.append("data", data);
 
-    console.log(formData);
+    console.log(formData.get("file_b64"));
+    console.log(formData.get("data"));
 
-    axios
+    await axios
       .post("http://localhost:3000/bfhl", formData)
       .then((res) => {
         console.log(res);
@@ -24,19 +25,25 @@ function App() {
   };
 
   return (
-    <div>
-      <TextField.Root
-        placeholder="data"
-        value={data}
-        onChange={(e) => setData(e.target.value)}
-      />
-      <Flex>
-        <Text>Upload your file</Text>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      </Flex>
-      <Button type="button" onClick={upload}>
-        Upload
-      </Button>
+    <div className="flex flex-row min-h-screen justify-center items-center">
+      <div className="flex flex-col gap-y-3">
+        <div>
+          <Text size={4} weight={"bold"}>
+            API Input
+          </Text>
+          <TextField.Root
+            placeholder={`data (ex: "{"data": ["B", "13", "a", "z"]}")`}
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+          />
+        </div>
+        <Flex>
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        </Flex>
+        <Button type="button" onClick={upload}>
+          Upload
+        </Button>
+      </div>
     </div>
   );
 }
