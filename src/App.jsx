@@ -1,25 +1,39 @@
 import { useState } from "react";
 import axios from "axios";
+import { Select } from "antd";
 
 import { Button, Text, TextField } from "@radix-ui/themes";
 
+const options = [
+  { label: "Alphabets", value: "alphabets" },
+  { label: "Numbers", value: "numbers" },
+  {
+    label: "Highest Lowercase Alphabet",
+    value: "highest_lowercase_alphabet"
+  }
+];
+
 function App() {
   const [data, setData] = useState("");
-  // eslint-disable-next-line no-unused-vars
   var [response, setResponse] = useState({});
+  var [filters, setFilters] = useState([
+    "alphabets",
+    "numbers",
+    "highest_lowercase_alphabet"
+  ]);
 
   const upload = async () => {
     try {
       const formData = JSON.parse(data);
       await axios
-        .post("http://localhost:3000/bfhl", formData)
+        .post("https://bfhl-backend-htmo.onrender.com/bfhl", formData)
         .then((res) => {
           console.log(res.data);
           setResponse(res.data);
         })
         .catch((er) => console.log(er));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -39,7 +53,37 @@ function App() {
         <Button type="button" onClick={upload}>
           Upload
         </Button>
-        <h1>Please check the console 😭</h1>
+        <Select
+          mode="multiple"
+          style={{ width: "100%" }}
+          placeholder="Select your filters"
+          defaultValue={["alphabets", "numbers", "highest_lowercase_alphabet"]}
+          options={options}
+          onChange={(value) => {
+            console.log(filters);
+            setFilters(value);
+          }}
+        />
+        {Object.keys(response).length > 0 && (
+          <>
+            {filters.map((filter) => (
+              <div key={filter} className="flex gap-x-1">
+                <Text size={4} weight={"bold"}>
+                  {" "}
+                  {filter}
+                  {": "}
+                </Text>
+                {response[filter].map((element, i) => (
+                  <div key={i}>
+                    <Text size={4} weight={"bold"}>
+                      {element}
+                    </Text>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
