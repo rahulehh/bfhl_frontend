@@ -27,6 +27,7 @@ function App() {
     "numbers",
     "highest_lowercase_alphabet"
   ]);
+  const [jsonerror, setJsonerror] = useState("");
 
   const upload = async () => {
     try {
@@ -34,12 +35,20 @@ function App() {
       await axios
         .post("https://bfhl-backend-htmo.onrender.com/bfhl", formData)
         .then((res) => {
-          console.log(res.data);
           setResponse(res.data);
+          setJsonerror("");
         })
-        .catch((er) => console.log(er));
+        .catch((er) => {
+          console.error(er);
+          setResponse({});
+          setJsonerror(
+            "Error sending post request to backend. Please check the internet correction. 😭"
+          );
+        });
     } catch (error) {
       console.error(error);
+      setResponse({});
+      setJsonerror("Please enter the data in json format");
     }
   };
 
@@ -74,7 +83,6 @@ function App() {
             ]}
             options={options}
             onChange={(value) => {
-              console.log(filters);
               setFilters(value);
             }}
           />
@@ -99,6 +107,11 @@ function App() {
               </div>
             ))}
           </div>
+        )}
+        {jsonerror && (
+          <Text color="red" size="4">
+            {jsonerror}
+          </Text>
         )}
       </div>
     </div>
