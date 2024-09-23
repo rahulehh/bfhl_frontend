@@ -4,6 +4,12 @@ import { Select } from "antd";
 
 import { Button, Text, TextField } from "@radix-ui/themes";
 
+const labels = {
+  alphabets: "Alphabets",
+  numbers: "Numbers",
+  highest_lowercase_alphabet: "Highest Lowercase Alphabet"
+};
+
 const options = [
   { label: "Alphabets", value: "alphabets" },
   { label: "Numbers", value: "numbers" },
@@ -53,36 +59,46 @@ function App() {
         <Button type="button" onClick={upload}>
           Upload
         </Button>
-        <Select
-          mode="multiple"
-          style={{ width: "100%" }}
-          placeholder="Select your filters"
-          defaultValue={["alphabets", "numbers", "highest_lowercase_alphabet"]}
-          options={options}
-          onChange={(value) => {
-            console.log(filters);
-            setFilters(value);
-          }}
-        />
+        <div>
+          <Text size={4} weight={"bold"}>
+            Multi filters
+          </Text>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            placeholder="Select your filters"
+            defaultValue={[
+              "alphabets",
+              "numbers",
+              "highest_lowercase_alphabet"
+            ]}
+            options={options}
+            onChange={(value) => {
+              console.log(filters);
+              setFilters(value);
+            }}
+          />
+        </div>
         {Object.keys(response).length > 0 && (
-          <>
+          <div>
+            <Text size={4} weight={"bold"}>
+              Filtered Responses
+            </Text>
             {filters.map((filter) => (
               <div key={filter} className="flex gap-x-1">
                 <Text size={4} weight={"bold"}>
                   {" "}
-                  {filter}
+                  {labels[filter]}
                   {": "}
                 </Text>
                 {response[filter].map((element, i) => (
                   <div key={i}>
-                    <Text size={4} weight={"bold"}>
-                      {element}
-                    </Text>
+                    <Text size={4}>{element}</Text>
                   </div>
                 ))}
               </div>
             ))}
-          </>
+          </div>
         )}
       </div>
     </div>
